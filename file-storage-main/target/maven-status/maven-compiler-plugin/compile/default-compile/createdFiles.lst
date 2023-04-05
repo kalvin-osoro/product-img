@@ -1,0 +1,8 @@
+com\javatechie\StorageServiceApplication.class
+com\javatechie\service\FileStorageService.class
+com\javatechie\entity\ImageData$ImageDataBuilder.class
+com\javatechie\model\Product.class
+com\javatechie\model\ProductImage.class
+com\javatechie\respository\ProductRepository.class
+com\javatechie\util\BaseAppResponse.class
+com\javatechie\entity\ImageData.class
