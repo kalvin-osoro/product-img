@@ -36,8 +36,11 @@ public class ProductController {
 
     @PostMapping("/add-product")
     @ResponseBody
-    public ResponseEntity<?> addProduct(@RequestParam("productDetails") String productDetails,
-                                                  @RequestParam("img") MultipartFile img
+//    public ResponseEntity<?> addProduct(@RequestParam("productDetails") String productDetails,
+//                                                  @RequestParam("img") MultipartFile img
+//                                                  ) {
+        public ResponseEntity<?> addProduct(@RequestParam("productDetails") String productDetails,
+                @RequestParam("img") MultipartFile img
                                                   ) {
         Object product=productService.addNewProduct(productDetails,img);
         boolean success = product != null;
