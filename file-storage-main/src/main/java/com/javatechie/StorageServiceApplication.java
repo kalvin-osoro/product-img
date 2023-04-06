@@ -1,7 +1,10 @@
 package com.javatechie;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import static org.springframework.boot.convert.ApplicationConversionService.configure;
 
 //@SpringBootApplication
 //@RestController
@@ -76,6 +79,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StorageServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StorageServiceApplication.class, args);
+
+
+	}
+
+	private static void configure(SerializationFeature serializationFeature, boolean b) {
+		configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 	}
 
 }

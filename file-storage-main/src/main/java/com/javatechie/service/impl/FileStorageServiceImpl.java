@@ -4,11 +4,14 @@ import com.javatechie.service.FileStorageService;
 import com.javatechie.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +19,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+
 
 @Service
 @Slf4j
@@ -31,6 +36,9 @@ public class FileStorageServiceImpl implements FileStorageService {
         try {
 
             Path subDirectory = Paths.get(uploadDirectory + "/" + folderName);
+            if (file.isEmpty()) {
+                throw new RuntimeException("File is empty");
+            }
             if (!Files.exists(subDirectory)) {
                 Files.createDirectories(subDirectory);
             }
@@ -79,6 +87,48 @@ public class FileStorageServiceImpl implements FileStorageService {
 
         }
     }
+
+
+    @Override
+    public Resource loadFileAsResourceByName(String fileName) {
+        try {
+            Path filePath = Paths.get(uploadDirectory + "/" + ImageUtils.getSubFolder() + "/").resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileName, ex);
+        }
+    }
+
+    @Override
+    public List<Resource> loadAllFilesAsResources() {
+        List<Resource> resources = new ArrayList<>();
+        try {
+            Path directory = Paths.get(uploadDirectory + "/" + ImageUtils.getSubFolder() +"/");
+            Files.walk(directory)
+                    .filter(Files::isRegularFile)
+                    .forEach(path -> {
+                        try {
+                            Resource resource = new UrlResource(path.toUri());
+                            if (resource.exists()) {
+                                resources.add(resource);
+                            } else {
+                                throw new RuntimeException("File not found " + path);
+                            }
+                        } catch (MalformedURLException ex) {
+                            throw new RuntimeException("File not found " + path, ex);
+                        }
+                    });
+        } catch (IOException ex) {
+            throw new RuntimeException("Error reading files from directory " + uploadDirectory, ex);
+        }
+        return resources;
+    }
+
 
 
 }
